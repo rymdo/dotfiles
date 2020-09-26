@@ -1,5 +1,6 @@
 tap 'mas-cli/tap'
 tap 'homebrew/cask'
+tap 'homebrew/cask-fonts'
 
 cask_args appdir: '/Applications'
 
@@ -12,11 +13,15 @@ brew 'neofetch'
 brew 'rcm'
 brew 'terraform@0.13'
 brew 'terragrunt'
+brew 'starship'
 brew 'tmux'
 brew 'yq'
 
 cask '1password'
+cask 'aws-vault'
 cask 'bartender'
+cask 'font-fira-code'
+cask 'font-fira-mono-nerd-font'
 cask 'google-chrome'
 cask 'slack'
 cask 'spotify'
