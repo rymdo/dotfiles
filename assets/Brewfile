@@ -8,6 +8,7 @@ brew 'dive'
 brew 'git-sizer'
 brew 'mas-cli/tap/mas'
 brew 'neofetch'
+brew 'rcm'
 
 cask '1password'
 cask 'bartender'

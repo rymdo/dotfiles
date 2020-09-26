@@ -1,2 +1,8 @@
+# Dotfiles
 .DS_Store
+.env
+
+# Brew
 Brewfile.lock.json
+
+*secret.zsh

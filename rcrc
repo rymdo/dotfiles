@@ -1,0 +1,2 @@
+EXCLUDES="README.md LICENSE script .git rcrc install.sh Brewfile"
+DOTFILES_DIRS="$(pwd)/rcm"
