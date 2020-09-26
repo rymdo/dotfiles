@@ -4,8 +4,17 @@ tap 'homebrew/cask'
 cask_args appdir: '/Applications'
 
 brew 'awscli'
+brew 'dive'
+brew 'git-sizer'
 brew 'mas-cli/tap/mas'
+brew 'neofetch'
 
+cask '1password'
+cask 'bartender'
 cask 'google-chrome'
+cask 'slack'
+cask 'spotify'
+cask 'visual-studio-code'
+cask 'vlc'
 
 mas 'Telegram', id: 747648890
