@@ -1,0 +1,11 @@
+tap 'mas-cli/tap'
+tap 'homebrew/cask'
+
+cask_args appdir: '/Applications'
+
+brew 'awscli'
+brew 'mas-cli/tap/mas'
+
+cask 'google-chrome'
+
+mas 'Telegram', id: 747648890
