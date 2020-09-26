@@ -1,6 +1,16 @@
 # ZSH
+alias reload='source ~/.zshrc'
 alias zshconfig="code ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
+
+# Dev
+alias g="git"
+alias y="yarn"
+
+# Git
+alias gst="git status"
+alias gl="git pull"
+alias gp="git push"
 
 # Brew
 alias brewup="brew update; brew upgrade; brew cleanup; brew doctor"
