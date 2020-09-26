@@ -11,6 +11,7 @@ alias y="yarn"
 alias gst="git status"
 alias gl="git pull"
 alias gp="git push"
+alias gg="git pull --rebase --autostash"
 
 # Brew
 alias brewup="brew update; brew upgrade; brew cleanup; brew doctor"
@@ -26,9 +27,6 @@ alias ti="terragrunt init"
 alias tp="terragrunt plan"
 alias ta="terragrunt apply"
 alias td="terragrunt destroy"
-
-# Git
-alias gg="git pull --rebase --autostash"
 
 # tmux
 alias tmh="tmux splitw -h"
