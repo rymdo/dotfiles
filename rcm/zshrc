@@ -17,4 +17,6 @@ do
   source $file
 done
 
+neofetch
+
 # zprof

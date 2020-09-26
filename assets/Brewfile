@@ -12,6 +12,7 @@ brew 'neofetch'
 brew 'rcm'
 brew 'terraform@0.13'
 brew 'terragrunt'
+brew 'tmux'
 brew 'yq'
 
 cask '1password'

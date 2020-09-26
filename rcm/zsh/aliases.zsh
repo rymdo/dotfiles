@@ -13,3 +13,7 @@ alias td="terragrunt destroy"
 
 # Git
 alias gg="git pull --rebase --autostash"
+
+# tmux
+alias tmh="tmux splitw -h"
+alias tmv="tmux splitw -v"
