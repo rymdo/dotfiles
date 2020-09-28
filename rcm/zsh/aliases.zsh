@@ -18,7 +18,7 @@ alias brewup="brew update; brew upgrade; brew cleanup; brew doctor"
 
 # AWS
 alias ava="aws-vault add"
-alias ave="aws-vault exec"
+alias ave="aws-vault exec --duration=8h"
 alias avl="aws-vault list"
 alias asp="echo \"use aws-vault! ava, ave, avl\""
 
