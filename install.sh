@@ -8,9 +8,11 @@ fi
 
 source ./scripts/brew.sh
 source ./scripts/zsh.sh
+source ./scripts/vscode.sh
 
 install_brew
 
-rcup -v -f -d $(pwd)/rcm
+RCRC=$(pwd)/rcrc rcup -v -f -d $(pwd)/rcm
 
+install_vscode_extensions
 install_zsh
