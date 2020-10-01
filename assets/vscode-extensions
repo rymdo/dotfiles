@@ -6,7 +6,6 @@ eamodio.gitlens
 editorconfig.editorconfig
 equinusocio.vsc-material-theme
 esbenp.prettier-vscode
-esbenp.prettier-vscode
 golang.go
 hashicorp.terraform
 ms-azuretools.vscode-docker
