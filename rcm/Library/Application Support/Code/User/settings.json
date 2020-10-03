@@ -78,7 +78,7 @@
     "enabled": false,
     "liveIndexing": false,
     "delay": 500,
-    "exclude": [".terraform/**/*", "**/.terraform/**/*"]
+    "exclude": [".terraform/**/*", "**/.terraform/**/*", "**/.terragrunt-cache"]
   },
   "terraform.languageServer": {
     "external": true,
