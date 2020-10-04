@@ -1,6 +1,6 @@
-tap 'mas-cli/tap'
-tap 'homebrew/cask'
 tap 'homebrew/cask-fonts'
+tap 'homebrew/cask'
+tap 'mas-cli/tap'
 
 cask_args appdir: '/Applications'
 
@@ -10,10 +10,11 @@ brew 'git-sizer'
 brew 'jq'
 brew 'mas-cli/tap/mas'
 brew 'neofetch'
+brew 'pipx'
 brew 'rcm'
-brew 'terraform@0.13'
-brew 'terragrunt'
 brew 'starship'
+brew 'terraform'
+brew 'terragrunt'
 brew 'tmux'
 brew 'yq'
 

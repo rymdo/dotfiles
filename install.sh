@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
-set -e
-
-if ! [ -x "$(which brew)" ]; then
-  /usr/bin/ruby -e \
-    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-fi
 
 source ./scripts/brew.sh
-source ./scripts/zsh.sh
+source ./scripts/pipx.sh
+source ./scripts/rcrc.sh
 source ./scripts/vscode.sh
+source ./scripts/zsh.sh
 
 install_brew
-
-RCRC=$(pwd)/rcrc rcup -v -f -d $(pwd)/rcm
-
+install_rcrc
 install_vscode_extensions
+install_pipx_packages
 install_zsh
+
+echo "done!"

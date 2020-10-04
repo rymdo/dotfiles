@@ -1,7 +1,10 @@
 install_brew() {
-    if test "$(uname)" != "Darwin" ; then
-      echo Skipping brew as this device is not running macOS
-      return
-    fi
-    brew bundle --file assets/Brewfile
+  if ! [ -x "$(which brew)" ]; then
+    echo "Installing brew"
+    /usr/bin/ruby -e \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  echo "Installing brew applications"
+  brew bundle --file assets/Brewfile
 }
