@@ -23,7 +23,6 @@ function k3s() {
 
 function _k3s_up() {
   local exists=$(_k3s_exists)
-  echo $exists
   if [ "$exists" -eq 0 ]; then
     echo "'${_k3s_multipass_node_name}' already up!"
     return
