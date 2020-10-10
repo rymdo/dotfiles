@@ -31,8 +31,8 @@ cask 'spotify'
 cask 'visual-studio-code'
 cask 'vlc'
 
-mas 'Telegram', id: 747648890
-mas 'EasyRes', id: 688211836
-mas 'Xcode', id: 497799835
 mas 'Bear', id: 1091189122
+mas 'EasyRes', id: 688211836
 mas 'Spark', id: 1176895641
+mas 'Telegram', id: 747648890
+mas 'Xcode', id: 497799835
