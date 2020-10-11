@@ -15,7 +15,7 @@ export K3S_FOLLOWER_1=k3s-follower-1
 function k3s() {
   local arg=$1
   if [ "$arg" = "" ]; then 
-    echo "k3s [up, down, config, status]"
+    echo "k3s [up, down, config, status, dashboard]"
     _k3s_status
     return
   fi
@@ -35,8 +35,12 @@ function k3s() {
     _k3s_status
     return
   fi
+  if [ "$arg" = "dashboard" ]; then
+    _k3s_dashboard
+    return
+  fi
   echo "invalid argument '$arg'"
-  echo "k3s [up, down, config, status]"
+  echo "k3s [up, down, config, status, dashboard]"
 }
 
 function _k3s_up() {
@@ -117,4 +121,43 @@ function _k3s_is_up() {
     return
   fi
   echo "false"
+}
+
+function _k3s_dashboard() {
+  kubectl create namespace kubernetes-dashboard
+
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+  # https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+
+  echo "################"
+  kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+  echo "################"
+
+  local url="http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
+  echo "go to url: ${url}"
+  open ${url}
+  kubectl proxy
 }
