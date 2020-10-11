@@ -2,18 +2,6 @@ source <(kubectl completion zsh)
 
 export _k3s_multipass_node_name=k3s
 
-function _k3s_auto() {
-  if [ ! -d "~/.k3s" ]; then 
-    _k3s_config
-    return
-  fi
-  if [ ! -f "~/.k3s/k3s.yaml" ]; then 
-    _k3s_config
-    return
-  fi
-}
-_k3s_auto
-
 # k3s [up, down, config]
 function k3s() {
   local arg=$1
@@ -68,6 +56,7 @@ function _k3s_down() {
 function _k3s_config() {
   local exists=$(_k3s_exists)
   if [ ! "$exists" -eq 0 ]; then
+    echo "'${_k3s_multipass_node_name}' is not up!"
     return
   fi
   local K3S_IP=$(multipass info ${_k3s_multipass_node_name} | grep IPv4 | awk '{print $2}')
@@ -75,6 +64,7 @@ function _k3s_config() {
   multipass exec ${_k3s_multipass_node_name} sudo cat /etc/rancher/k3s/k3s.yaml > ~/.k3s/k3s.yaml
   sed -i '' "s/127.0.0.1/${K3S_IP}/" ~/.k3s/k3s.yaml
   export KUBECONFIG=~/.k3s/k3s.yaml
+  echo "KUBECONFIG=${KUBECONFIG}"
 }
 
 function _k3s_exists() {
