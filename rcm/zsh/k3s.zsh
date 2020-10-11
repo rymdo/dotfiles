@@ -1,5 +1,7 @@
 source <(kubectl completion zsh)
 
+export K3S_KUBECONFIG_PATH=~/.k3s
+export K3S_KUBECONFIG_FILE=k3s.yaml
 export K3S_LEADER_0=k3s-leader-0
 export K3S_FOLLOWER_0=k3s-follower-0
 export K3S_FOLLOWER_1=k3s-follower-1
@@ -84,10 +86,10 @@ function _k3s_config() {
     return
   fi
   local K3S_IP=$(multipass info ${K3S_LEADER_0} | grep IPv4 | awk '{print $2}')
-  mkdir -p ~/.k3s
-  multipass exec ${K3S_LEADER_0} sudo cat /etc/rancher/k3s/k3s.yaml > ~/.k3s/k3s.yaml
-  sed -i '' "s/127.0.0.1/${K3S_IP}/" ~/.k3s/k3s.yaml
-  export KUBECONFIG=~/.k3s/k3s.yaml
+  mkdir -p ${K3S_KUBECONFIG_PATH}
+  multipass exec ${K3S_LEADER_0} sudo cat /etc/rancher/k3s/k3s.yaml > ${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
+  sed -i '' "s/127.0.0.1/${K3S_IP}/" ${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
+  export KUBECONFIG=${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
   echo "KUBECONFIG=${KUBECONFIG}"
 }
 
@@ -97,8 +99,12 @@ function _k3s_status() {
     echo "k3s is not up!"
     return
   fi
-  local K3S_IP=$(multipass info ${K3S_LEADER_0} | grep IPv4 | awk '{print $2}')
-  echo "'${K3S_LEADER_0}' running on ip '${K3S_IP}'"
+  echo ""
+  echo "multipass list: "
+  multipass list
+  echo ""
+  echo "kubectl get nodes:"
+  kubectl get nodes
 }
 
 function _k3s_is_up() {
