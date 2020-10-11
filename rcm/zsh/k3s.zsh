@@ -1,12 +1,19 @@
 source <(kubectl completion zsh)
 
-export _k3s_multipass_node_name=k3s
+export K3S_LEADER_0=k3s-leader-0
+export K3S_FOLLOWER_0=k3s-follower-0
+export K3S_FOLLOWER_1=k3s-follower-1
+
+# Based on these guides:
+# https://medium.com/@jyeee/kubernetes-on-your-macos-laptop-with-multipass-k3s-and-rancher-2-4-6e9cbf013f58
+# https://levelup.gitconnected.com/kubernetes-cluster-with-k3s-and-multipass-7532361affa3
 
 # k3s [up, down, config]
 function k3s() {
   local arg=$1
   if [ "$arg" = "" ]; then 
-    echo "k3s [up, down, config]"
+    echo "k3s [up, down, config, status]"
+    _k3s_status
     return
   fi
   if [ "$arg" = "up" ]; then 
@@ -21,21 +28,38 @@ function k3s() {
     _k3s_config
     return
   fi
+  if [ "$arg" = "status" ]; then
+    _k3s_status
+    return
+  fi
   echo "invalid argument '$arg'"
-  echo "k3s [up, down, config]"
+  echo "k3s [up, down, config, status]"
 }
 
 function _k3s_up() {
-  local exists=$(_k3s_exists)
-  if [ "$exists" -eq 0 ]; then
-    echo "'${_k3s_multipass_node_name}' already up!"
+  local is_up=$(_k3s_is_up)
+  if [ "$is_up" = "true" ]; then
+    echo "k3s already up!"
     return
   fi
 
-  # based on guide from https://medium.com/@jyeee/kubernetes-on-your-macos-laptop-with-multipass-k3s-and-rancher-2-4-6e9cbf013f58
-  echo "Creating '${_k3s_multipass_node_name}'"
-  multipass launch --name ${_k3s_multipass_node_name} --cpus 4 --mem 4g --disk 20g
-  multipass exec ${_k3s_multipass_node_name} -- bash -c "curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sh -"
+  echo "Bring up k3s cluster"
+
+  echo "Launching nodes"
+  multipass launch --name ${K3S_LEADER_0} --cpus 1 --mem 1g --disk 5g
+  multipass launch --name ${K3S_FOLLOWER_0} --cpus 1 --mem 1g --disk 5g
+  multipass launch --name ${K3S_FOLLOWER_1} --cpus 1 --mem 1g --disk 5g
+
+  echo "Initializing leader nodes"
+  multipass exec ${K3S_LEADER_0} -- bash -c "curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sh -"
+  local k3s_leader_ip=$(multipass info ${K3S_LEADER_0} | grep IPv4 | awk '{print $2}')
+  local k3s_leader_token="$(multipass exec ${K3S_LEADER_0} -- /bin/bash -c "sudo cat /var/lib/rancher/k3s/server/node-token")"
+
+  echo "Initializing follower nodes"
+  multipass exec ${K3S_FOLLOWER_0} -- /bin/bash -c "curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_leader_token} K3S_URL=https://${k3s_leader_ip}:6443 sh -"
+  multipass exec ${K3S_FOLLOWER_1} -- /bin/bash -c "curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_leader_token} K3S_URL=https://${k3s_leader_ip}:6443 sh -"
+
+  multipass list
 
   echo "Setting up KUBECONFIG"
   _k3s_config
@@ -45,29 +69,44 @@ function _k3s_up() {
 }
 
 function _k3s_down() {
-  echo "Destroying '${_k3s_multipass_node_name}'"
-  
-  multipass delete ${_k3s_multipass_node_name}
+  echo "Bring down k3s cluster"
+  multipass delete ${K3S_LEADER_0}
+  multipass delete ${K3S_FOLLOWER_0}
+  multipass delete ${K3S_FOLLOWER_1}
   multipass purge
-
   echo "Done"
 }
 
 function _k3s_config() {
-  local exists=$(_k3s_exists)
-  if [ ! "$exists" -eq 0 ]; then
-    echo "'${_k3s_multipass_node_name}' is not up!"
+  local is_up=$(_k3s_is_up)
+  if [ "$is_up" = "false" ]; then
+    echo "k3s is not up!"
     return
   fi
-  local K3S_IP=$(multipass info ${_k3s_multipass_node_name} | grep IPv4 | awk '{print $2}')
+  local K3S_IP=$(multipass info ${K3S_LEADER_0} | grep IPv4 | awk '{print $2}')
   mkdir -p ~/.k3s
-  multipass exec ${_k3s_multipass_node_name} sudo cat /etc/rancher/k3s/k3s.yaml > ~/.k3s/k3s.yaml
+  multipass exec ${K3S_LEADER_0} sudo cat /etc/rancher/k3s/k3s.yaml > ~/.k3s/k3s.yaml
   sed -i '' "s/127.0.0.1/${K3S_IP}/" ~/.k3s/k3s.yaml
   export KUBECONFIG=~/.k3s/k3s.yaml
   echo "KUBECONFIG=${KUBECONFIG}"
 }
 
-function _k3s_exists() {
-  multipass info ${_k3s_multipass_node_name} &> /dev/null
-  echo $?
+function _k3s_status() {
+  local is_up=$(_k3s_is_up)
+  if [ "$is_up" = "false" ]; then
+    echo "k3s is not up!"
+    return
+  fi
+  local K3S_IP=$(multipass info ${K3S_LEADER_0} | grep IPv4 | awk '{print $2}')
+  echo "'${K3S_LEADER_0}' running on ip '${K3S_IP}'"
+}
+
+function _k3s_is_up() {
+  multipass info ${K3S_LEADER_0} &> /dev/null
+  local exists=$?
+  if [ "$exists" -eq 0 ]; then
+    echo "true"
+    return
+  fi
+  echo "false"
 }
