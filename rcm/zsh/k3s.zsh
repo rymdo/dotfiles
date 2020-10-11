@@ -1,4 +1,5 @@
 source <(kubectl completion zsh)
+source <(helm completion zsh)
 
 export K3S_KUBECONFIG_PATH=~/.k3s
 export K3S_KUBECONFIG_FILE=k3s.yaml
@@ -89,6 +90,7 @@ function _k3s_config() {
   mkdir -p ${K3S_KUBECONFIG_PATH}
   multipass exec ${K3S_LEADER_0} sudo cat /etc/rancher/k3s/k3s.yaml > ${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
   sed -i '' "s/127.0.0.1/${K3S_IP}/" ${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
+  chmod 600 ${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
   export KUBECONFIG=${K3S_KUBECONFIG_PATH}/${K3S_KUBECONFIG_FILE}
   echo "KUBECONFIG=${KUBECONFIG}"
 }
