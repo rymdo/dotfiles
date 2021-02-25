@@ -1,0 +1,24 @@
+add_newline = true
+
+[package]
+disabled = true
+
+[aws]
+style = "bold yellow"
+symbol = "☁️  "
+displayed_items = "all"
+format = "on [$symbol$region]($style) "
+
+[kubernetes]
+style = "bright-blue bold"
+disabled = false
+symbol = "☸️  "
+
+[kubernetes.context_aliases]
+"<AWS_EKS_CLUSTER_ARN>/<AWS_EKS_CLUSTER_LIVE>"    = "eks:live(⚠️ )"
+"<AWS_EKS_CLUSTER_ARN>/<AWS_EKS_CLUSTER_STAGING>" = "eks:staging(🍒)"
+"<AWS_EKS_CLUSTER_ARN>/<AWS_EKS_CLUSTER_TEST>"    = "eks:test(🧪)"
+"<AWS_EKS_CLUSTER_ARN>/<AWS_EKS_CLUSTER_DEV>"     = "eks:dev(👩‍💻)"
+
+[terraform]
+disabled = true
