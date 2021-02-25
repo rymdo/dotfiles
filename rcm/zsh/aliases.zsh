@@ -27,7 +27,3 @@ alias ti="terragrunt init"
 alias tp="terragrunt plan"
 alias ta="terragrunt apply"
 alias td="terragrunt destroy"
-
-# tmux
-alias tmh="tmux splitw -h"
-alias tmv="tmux splitw -v"
