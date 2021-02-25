@@ -12,6 +12,9 @@ source $ZSH/oh-my-zsh.sh
 typeset -U config_files
 config_files=(~/.zsh/*.zsh)
 
+# Load first
+source ~/.zsh/secret.zsh
+
 for file in ${config_files}
 do
   source $file
